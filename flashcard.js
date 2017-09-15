@@ -18,18 +18,7 @@ function startProgram () {
         'Create a new card',
         'Test a card'
       ]
-    }
-  ]).then(response => {
-    if (response.action === 'Create a new card') {
-      createCard();
-    } else {
-      testCard();
-    }
-  });
-}
-
-function createCard () {
-  inquirer.prompt([
+    },
     {
       type: 'list',
       name: 'typeOfCard',
@@ -38,80 +27,66 @@ function createCard () {
         'Cloze',
         'Basic'
       ]
-    }
-  ]).then(response => {
-    if (response.typeOfCard === 'Cloze') {
-      addNewClozeCard();
-    } else {
-      addNewBasicCard();
-    }
-  });
-}
-
-function addNewClozeCard () {
-  inquirer.prompt([
+    },
+    // input for creating new cloze card
     {
       type: 'input',
       name: 'text',
-      message: 'Enter your statement:'
+      message: 'Enter your statement:',
+      when: function (answer) {
+        return (answer.typeOfCard === 'Cloze') && (answer.action === 'Create a new card');
+      }
     },
     {
       type: 'input',
       name: 'cloze',
-      message: 'Enter your cloze:'
-    }
-
-  ]).then(response => {
-    clozeList.push(new Cloze(response.text, response.cloze));
-    console.log('Card added.');
-    startProgram();
-  });
-}
-
-function addNewBasicCard () {
-  inquirer.prompt([
+      message: 'Enter your cloze:',
+      when: function (answer) {
+        return (answer.typeOfCard === 'Cloze') && (answer.action === 'Create a new card');
+      }
+    },
+    // input for create new basic card
     {
       type: 'input',
       name: 'front',
-      message: 'Enter the front card:'
+      message: 'Enter the front card:',
+      when: function (answer) {
+        return (answer.typeOfCard === 'Basic') && (answer.action === 'Create a new card');
+      }
     },
     {
       type: 'input',
       name: 'back',
-      message: 'Enter the back card:'
+      message: 'Enter the back card:',
+      when: function (answer) {
+        return (answer.typeOfCard === 'Basic') && (answer.action === 'Create a new card');
+      }
     }
 
   ]).then(response => {
-    basicList.push(new Basic(response.front, response.back));
-    console.log('Card added.');
-    startProgram();
-  });
-}
-
-function testCard () {
-  inquirer.prompt([
-    {
-      type: 'list',
-      name: 'typeOfCard',
-      message: 'Select type of flashcard:',
-      choices: [
-        'Cloze',
-        'Basic'
-      ]
-    }
-  ]).then(response => {
-    if (response.typeOfCard === 'Cloze') {
-      testClozeCard();
-    } else {
-      testBasicCard();
+    // create new cards
+    if (response.action === 'Create a new card') {
+      if (response.typeOfCard === 'Cloze') {
+        clozeList.push(new Cloze(response.text, response.cloze));
+        console.log('Card added.');
+      } else {
+        basicList.push(new Basic(response.front, response.back));
+        console.log('Card added.');
+      }
+    } else { // test cards
+      if (response.typeOfCard === 'Cloze') {
+        testClozeCard();
+      } else {
+        testBasicCard();
+      }
     }
   });
 }
 
 function testClozeCard () {
   var choices = [];
-  clozeList.forEach((card,index) => {
-    choices.push((index+1) + ") " +card.partial);
+  clozeList.forEach((card, index) => {
+    choices.push((index + 1) + ') ' + card.partial);
   });
 
   inquirer.prompt([
@@ -122,7 +97,7 @@ function testClozeCard () {
       choices: choices
     }
   ]).then(response => {
-    var index = parseInt(response.card.slice(0,response.card.indexOf(')')))-1;
+    var index = parseInt(response.card.slice(0, response.card.indexOf(')'))) - 1;
     console.log(clozeList[index].fullText);
     startProgram();
   });
@@ -130,8 +105,8 @@ function testClozeCard () {
 
 function testBasicCard () {
   var choices = [];
-  basicList.forEach((card,index) => {
-    choices.push((index+1) + ") " +card.front);
+  basicList.forEach((card, index) => {
+    choices.push((index + 1) + ') ' + card.front);
   });
 
   inquirer.prompt([
@@ -142,7 +117,7 @@ function testBasicCard () {
       choices: choices
     }
   ]).then(response => {
-    var index = parseInt(response.card.slice(0,response.card.indexOf(')')))-1;
+    var index = parseInt(response.card.slice(0, response.card.indexOf(')'))) - 1;
     console.log(basicList[index].back);
     startProgram();
   });
