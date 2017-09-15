@@ -1,0 +1,22 @@
+{
+  "name": "flashcards",
+  "version": "1.0.0",
+  "description": "",
+  "main": "flashcard.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dannynhois/FlashCard.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dannynhois/FlashCard/issues"
+  },
+  "homepage": "https://github.com/dannynhois/FlashCard#readme",
+  "dependencies": {
+    "inquirer": "^3.2.3"
+  }
+}
